@@ -38,6 +38,28 @@ function titleClickHandler(event){
   }
 }
 
+const optArticleSelector = '.post',
+  optTitleSelector = '.post-title',
+  optTitleListSelector = '.titles';
+
+function generateTitleLinks(){
+  const list = document.querySelector(optTitleListSelector);
+  const articles = document.querySelectorAll(optArticleSelector);
+  /*let html = '';*/
+  list.innerHTML = ''; 
+
+  for(let article of articles){
+    const articleID = article.id;
+    const title = article.querySelector(optTitleSelector).innerHTML;
+    list.innerHTML += '<li><a href="#'+articleID+'"><span>'+title+'</span></a></li>';
+    /*const  linkHTML = '<li><a href="#'+articleID+'"><span>'+title+'</span></a></li>';
+    html = html + linkHTML;
+    list.innerHTML = html;*/
+  }
+}
+
+generateTitleLinks();
+
 const links = document.querySelectorAll('.titles a');
 
 for(let link of links){
