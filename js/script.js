@@ -68,7 +68,7 @@ function generateTags(){
     const tags = listOfArticles.getAttribute('data-tags');
     const articleTagsArray = tags.split(' ');
     for(let tag of articleTagsArray){
-      tagOfList.innerHTML += `<li><a href="#tag-`+tag+`">`+tag+`</a></li>`;
+      tagOfList.innerHTML += `<li><a href="#tag-${tag}">${tag}</a></li>`;
     }    
   }
 }
