@@ -2,7 +2,7 @@
 
 function titleClickHandler(){
   const clickedElement = this;
-  console.log('Link was clicked!');
+  console.log(clickedElement);
 
   const activeLinks = document.querySelectorAll('.titles a.active');
   const checkActiveList = clickedElement.classList.contains('active');
@@ -55,16 +55,16 @@ function generateTitleLinks(selector = ''){
 
 generateTitleLinks();
 
-const links = document.querySelectorAll('.titles a');
-
-for(let link of links){
-  link.addEventListener('click', titleClickHandler);
+function addClickListenersToArticles(){
+  const links = document.querySelectorAll('a[href^="#article-"]');
+  for(let link of links){
+    link.addEventListener('click', titleClickHandler);    
+  }
 }
 
 function calculateTagsParams(tags){
   const params = {min: 999999 , max: 0};
   for(let tag in tags){
-    console.log(tag + ' is used ' + tags[tag] + ' times');
     if(tags[tag] > params.max){
       params.max = tags[tag];
     }
@@ -92,7 +92,6 @@ function generateTags(){
     }
     const tagList = document.querySelector('.tags');
     const tagStyle = calculateTagsParams(allTags);
-    console.log('tagsParams',tagStyle);
     let allTagsHTML = '';
     for(let tag in allTags){
       let color;
@@ -113,6 +112,7 @@ generateTags();
 
 function tagClickHandler(){
   const clickedElement = this;
+  console.log(clickedElement);
   const href = clickedElement.getAttribute('href');
   const tager = href.replace('#tag-', '');
   const activeLinks = document.querySelectorAll('.list a.active');
@@ -133,7 +133,7 @@ function addClickListenersToTags(){
   }
 }
 
-addClickListenersToTags();
+
 
 
 function generateAuthors(){
@@ -149,6 +149,7 @@ generateAuthors();
 
 function authorClickHandler(){
   const clickedElement = this;
+  console.log(clickedElement);
   const href = clickedElement.getAttribute('href');
   const tager = href.replace('#author-', '');
   const activeLinks = document.querySelectorAll('.list a.active');
@@ -170,3 +171,5 @@ function addClickListenersToauthor(){
 }
 
 addClickListenersToauthor();
+addClickListenersToTags();
+addClickListenersToArticles();
