@@ -1,3 +1,10 @@
+const templates = {
+  articleLink: Handlebars.compile(document.querySelector('#template-article-link').innerHTML),
+  articleLinkTag: Handlebars.compile(document.querySelector('#template-article-tag').innerHTML),
+  articleLinkAuthor: Handlebars.compile(document.querySelector('#template-article-author').innerHTML),
+  tagCloudLink: Handlebars.compile(document.querySelector('#tag-cloud-link').innerHTML)
+}
+
 'use strict';
 
 function titleClickHandler(){
@@ -49,7 +56,9 @@ function generateTitleLinks(selector = ''){
   for(let article of articles){
     const articleID = article.id;
     const title = article.querySelector(optTitleSelector).innerHTML;
-    list.innerHTML += '<li><a href="#'+articleID+'"><span>'+title+'</span></a></li>';
+    const linkHTMLData = {id: articleID, title: title};
+    const linkHTML = templates.articleLink(linkHTMLData);
+    list.innerHTML += linkHTML;
   }
 }
 
@@ -83,7 +92,9 @@ function generateTags(){
     const dataTag = allArticle.getAttribute('data-tags');
     const tagsArray = dataTag.split(' ');
     for(let tagArray of tagsArray){
-      tagOfList.innerHTML += `<li><a href="#tag-${tagArray}">${tagArray}</a></li>`;
+      const linkHTMLDatatag = {id: tagArray, title: tagArray};
+      const linkHTMLtag = templates.articleLinkTag(linkHTMLDatatag);
+      tagOfList.innerHTML += linkHTMLtag;
       if(!allTags.hasOwnProperty(tagArray)){
         allTags[tagArray] = 1;
       }else{
@@ -92,7 +103,7 @@ function generateTags(){
     }
     const tagList = document.querySelector('.tags');
     const tagStyle = calculateTagsParams(allTags);
-    let allTagsHTML = '';
+    const allTagsData = {tags: []};
     for(let tag in allTags){
       let color;
       if(allTags[tag] === tagStyle.min){
@@ -102,9 +113,14 @@ function generateTags(){
       }else{
         color = 2;
       }
-      allTagsHTML += `<li><a class="color-${color}" href="#tag-${tag}">${tag}</a></li>`;
+      allTagsData.tags.push({
+        tag: tag,
+        count: allTags[tag],
+        colors: color
+      });
     }
-    tagList.innerHTML = allTagsHTML;
+    tagList.innerHTML = templates.tagCloudLink(allTagsData);
+    
   }
 }
 
@@ -133,15 +149,14 @@ function addClickListenersToTags(){
   }
 }
 
-
-
-
 function generateAuthors(){
   const listOfAuthors = document.querySelectorAll(optArticleSelector);
   for(let listOfAuthor of listOfAuthors){
     const tagOfList = listOfAuthor.querySelector(optArticleTagsSelector);
     const tags = listOfAuthor.getAttribute('data-author');
-    tagOfList.innerHTML += `<li><a href="#author-`+tags+`">`+tags+`</a></li>`;   
+    const linkHTMLDataAuthor = {id: tags, title: tags};
+    const linkHTMLAuthor = templates.articleLinkAuthor(linkHTMLDataAuthor);
+    tagOfList.innerHTML += linkHTMLAuthor;    
   }
 }
 
