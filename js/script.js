@@ -61,15 +61,51 @@ for(let link of links){
   link.addEventListener('click', titleClickHandler);
 }
 
-function generateTags(){
+function calculateTagsParams(tags){
+  const params = {min: 999999 , max: 0};
+  for(let tag in tags){
+    console.log(tag + ' is used ' + tags[tag] + ' times');
+    if(tags[tag] > params.max){
+      params.max = tags[tag];
+    }
+    if(tags[tag] < params.min){
+      params.min = tags[tag];
+    }
+  }
+  return params;
+}
+
+function generateTags(){ 
+  let allTags = {};
   const listOfArticle = document.querySelectorAll(optArticleSelector);
-  for(let listOfArticles of listOfArticle){
-    const tagOfList = listOfArticles.querySelector(optArticleTagsSelector);
-    const tags = listOfArticles.getAttribute('data-tags');
-    const articleTagsArray = tags.split(' ');
-    for(let tag of articleTagsArray){
-      tagOfList.innerHTML += `<li><a href="#tag-${tag}">${tag}</a></li>`;
-    }    
+  for(let allArticle of listOfArticle){
+    const tagOfList = allArticle.querySelector(optArticleTagsSelector);
+    const dataTag = allArticle.getAttribute('data-tags');
+    const tagsArray = dataTag.split(' ');
+    for(let tagArray of tagsArray){
+      tagOfList.innerHTML += `<li><a href="#tag-${tagArray}">${tagArray}</a></li>`;
+      if(!allTags.hasOwnProperty(tagArray)){
+        allTags[tagArray] = 1;
+      }else{
+        allTags[tagArray]++;
+      }
+    }
+    const tagList = document.querySelector('.tags');
+    const tagStyle = calculateTagsParams(allTags);
+    console.log('tagsParams',tagStyle);
+    let allTagsHTML = '';
+    for(let tag in allTags){
+      let color;
+      if(allTags[tag] === tagStyle.min){
+        color = 1;
+      }else if(allTags[tag] === tagStyle.max){
+        color = 3;
+      }else{
+        color = 2;
+      }
+      allTagsHTML += `<li><a class="color-${color}" href="#tag-${tag}">${tag}</a></li>`;
+    }
+    tagList.innerHTML = allTagsHTML;
   }
 }
 
