@@ -2,7 +2,8 @@ const templates = {
   articleLink: Handlebars.compile(document.querySelector('#template-article-link').innerHTML),
   articleLinkTag: Handlebars.compile(document.querySelector('#template-article-tag').innerHTML),
   articleLinkAuthor: Handlebars.compile(document.querySelector('#template-article-author').innerHTML),
-  tagCloudLink: Handlebars.compile(document.querySelector('#tag-cloud-link').innerHTML)
+  tagCloudLink: Handlebars.compile(document.querySelector('#tag-cloud-link').innerHTML),
+  tagAuthorLink: Handlebars.compile(document.querySelector('#author-cloud-link').innerHTML)
 }
 
 'use strict';
@@ -57,8 +58,7 @@ function generateTitleLinks(selector = ''){
     const articleID = article.id;
     const title = article.querySelector(optTitleSelector).innerHTML;
     const linkHTMLData = {id: articleID, title: title};
-    const linkHTML = templates.articleLink(linkHTMLData);
-    list.innerHTML += linkHTML;
+    list.innerHTML += templates.articleLink(linkHTMLData);
   }
 }
 
@@ -93,15 +93,14 @@ function generateTags(){
     const tagsArray = dataTag.split(' ');
     for(let tagArray of tagsArray){
       const linkHTMLDatatag = {id: tagArray, title: tagArray};
-      const linkHTMLtag = templates.articleLinkTag(linkHTMLDatatag);
-      tagOfList.innerHTML += linkHTMLtag;
+      tagOfList.innerHTML += templates.articleLinkTag(linkHTMLDatatag);      
       if(!allTags.hasOwnProperty(tagArray)){
         allTags[tagArray] = 1;
       }else{
         allTags[tagArray]++;
       }
     }
-    const tagList = document.querySelector('.tags');
+    const tagList = document.querySelector('.sidebar .tags');
     const tagStyle = calculateTagsParams(allTags);
     const allTagsData = {tags: []};
     for(let tag in allTags){
@@ -119,6 +118,7 @@ function generateTags(){
         colors: color
       });
     }
+    console.log(allTagsData);
     tagList.innerHTML = templates.tagCloudLink(allTagsData);
     
   }
@@ -150,14 +150,28 @@ function addClickListenersToTags(){
 }
 
 function generateAuthors(){
+  let allTags = {};
   const listOfAuthors = document.querySelectorAll(optArticleSelector);
+  const listOfAuthorsSide = document.querySelector('.sidebar .authors');
   for(let listOfAuthor of listOfAuthors){
     const tagOfList = listOfAuthor.querySelector(optArticleTagsSelector);
     const tags = listOfAuthor.getAttribute('data-author');
     const linkHTMLDataAuthor = {id: tags, title: tags};
     const linkHTMLAuthor = templates.articleLinkAuthor(linkHTMLDataAuthor);
-    tagOfList.innerHTML += linkHTMLAuthor;    
+    tagOfList.innerHTML += linkHTMLAuthor;
+    if(!allTags.hasOwnProperty(tags)){
+      allTags[tags] = 1;
+    }else{
+      allTags[tags]++;
+    }
   }
+  const allTagsData = {tags: []};
+  for(let tag in allTags){
+    allTagsData.tags.push({
+      tag: tag
+    });
+  }
+  listOfAuthorsSide.innerHTML = templates.tagAuthorLink(allTagsData);
 }
 
 generateAuthors();
